@@ -1,6 +1,6 @@
 # Primer-Designer
 
-This script will calculate the optimal PCR primers for a given species and gene.
+This script will calculate the optimal PCR primers for a given species's gene.
 
 The script finds the DNA sequence of the target gene using the [Ensembl REST API](https://rest.ensembl.org), finds overlapping sections between any splice variants, then initialises [`primer3`](https://github.com/primer3-org/primer3) to find the best primer pairs given a set of parameters.
 
