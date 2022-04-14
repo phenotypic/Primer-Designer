@@ -137,8 +137,6 @@ in_args = list(primer_params.values())
 with open('parameters.txt', 'r') as file:
     in_file = file.read().format(''.join(search_sequence), *in_args, config_location)
 
-print(in_file)
-
 output = subprocess.run(['primer3_core'], stdout=subprocess.PIPE, input=in_file, encoding='ascii')
 output = output.stdout.replace('\n', '=').split('=')
 
