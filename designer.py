@@ -318,6 +318,8 @@ for i in range(pair_count):
 for index in reversed(range(len(pairs))):
     print('\n\nPrimer pair', index + 1)
     print('---------------------')
+    print('Gene name:', gene['display_name'])
+    print('Species:', gene['species'])
     print('Product size:', pairs[index]['product_size'])
     print('Any compl   :', pairs[index]['compl_any'])
     print('End compl   :', pairs[index]['compl_end'])
