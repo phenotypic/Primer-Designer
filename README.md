@@ -1,8 +1,8 @@
 # Primer-Designer
 
-This script will calculate the optimal PCR primers for a given species's gene.
+This script will calculate the optimal PCR primers for a given gene.
 
-The script finds the DNA sequence of the target gene using the [Ensembl REST API](https://rest.ensembl.org), finds overlapping sections between any splice variants, then initialises [`primer3`](https://github.com/primer3-org/primer3) to find the best primer pairs given a set of parameters.
+The script finds the DNA sequence of the target gene using the [Ensembl REST API](https://rest.ensembl.org), finds overlapping sections between any splice variants, then initialises [`primer3`](https://github.com/primer3-org/primer3) to find the best primer pairs according to a set of parameters.
 
 ## Prerequisites
 
@@ -36,7 +36,7 @@ Here are some flags you can add:
 
 After running the script and selecting a target species and gene, the overlapping regions of any splice variants will be found.
 
-Next, you will be asked of you want to adjust the default primer search parameters:
+Next, you will be asked if you want to adjust the default primer search parameters:
 
 ```
 +-------+--------------------+---------+
