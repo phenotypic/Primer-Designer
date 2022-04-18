@@ -8,7 +8,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-s', help='species')
 parser.add_argument('-g', help='gene')
 parser.add_argument('-p', help='parameter file name')
-parser.add_argument('-c', help='thermal path')
+parser.add_argument('-t', help='thermal path')
 parser.add_argument('-v', help='verbose output', action='store_true')
 args = parser.parse_args()
 
@@ -132,7 +132,7 @@ for key, value in primer_params.items():
     primer_params[key].extend((original_value, original_value))
 
 
-def renderList():
+def selectionMenu():
     list = PrettyTable(['Index', 'Parameter', 'Value'])
 
     for index, (key, value) in enumerate(primer_params.items()):
@@ -140,8 +140,6 @@ def renderList():
     print('\nPrimer search parameters:')
     print(list)
 
-
-def selectionMenu():
     response = input('\nEnter index of parameter to edit or press return: ').lower()
     if response in string.ascii_lowercase:
         return
@@ -149,11 +147,9 @@ def selectionMenu():
         field = list(primer_params)[int(response) - 1]
         value = input(field + ': ')
         primer_params[field][1] = value
-        renderList()
         selectionMenu()
 
 
-renderList()
 selectionMenu()
 
 joined_sequence = ''.join(search_sequence)
@@ -166,10 +162,10 @@ for value in primer_params.values():
 
 in_file = in_file.replace('SEQUENCE_TEMPLATE=', 'SEQUENCE_TEMPLATE=' + joined_sequence)
 
-if args.c is not None:
+if args.t is not None:
     config_text = 'PRIMER_THERMODYNAMIC_PARAMETERS_PATH='
     original_value = in_file.split(config_text)[1].split('\n')[0]
-    in_file = in_file.replace(config_text + original_value, config_text + args.c)
+    in_file = in_file.replace(config_text + original_value, config_text + args.t)
 
 output = subprocess.run(['primer3_core'], stdout=subprocess.PIPE, input=in_file, encoding='ascii')
 output = output.stdout.replace('\n', '=').split('=')
