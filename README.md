@@ -2,7 +2,7 @@
 
 This script will calculate the optimal PCR primers for a given gene.
 
-The script finds the DNA sequence of the target gene using the [Ensembl REST API](https://rest.ensembl.org), finds overlapping sections between any splice variants, then initialises [`primer3`](https://github.com/primer3-org/primer3) to find the best primer pairs according to a set of parameters.
+The DNA sequence of the target gene is retrieved using the [Ensembl REST API](https://rest.ensembl.org), overlapping sections between splice variants are calculated, then [`primer3`](https://github.com/primer3-org/primer3) is used to find the best primer pairs.
 
 ## Prerequisites
 
