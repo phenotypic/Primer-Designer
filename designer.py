@@ -2,7 +2,6 @@ import ensembl_rest
 import argparse
 import subprocess
 import string
-import re
 from prettytable import PrettyTable
 
 parser = argparse.ArgumentParser()
