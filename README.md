@@ -69,3 +69,15 @@ End compl   : 0.00
 |   Right   |   23   | 60.121 | 47.826 |     0.00     |   0.00  |     3.1800    | GACGGTTGAGCTTGATTCTGAAC |
 +-----------+--------+--------+--------+--------------+---------+---------------+-------------------------+
 ```
+
+## Notes
+
+- If your target gene has lots of splice varaints (e.g. [DARS2](https://ensembl.org/Homo_sapiens/Gene/Summary?db=core;g=ENSG00000117593;r=1:173824653-173858808)), it is possible that there will not be any overlapping sequences across all varaints. In this case, you should manually select the splice varaints which are most prevalent.
+
+## To-do
+
+- Use parameters file as default values (not coded into script)
+- BLAST primer check
+- Allow command arguments for primer parameters
+- Allow input for left or right primer
+- Save info and sequence files locally for offline checks
