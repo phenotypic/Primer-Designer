@@ -73,6 +73,7 @@ End compl   : 0.00
 ## Notes
 
 - If your target gene has lots of splice varaints (e.g. [DARS2](https://ensembl.org/Homo_sapiens/Gene/Summary?db=core;g=ENSG00000117593;r=1:173824653-173858808)), it is possible that there will not be any overlapping sequences across all varaints. In this case, you should manually select the splice varaints which are most prevalent.
+- You can modify the default primer search parameters by modifying `parameters.txt` directly
 - The script has been thoroughly tested with these `zebrafish` genes: 
   - `wnt10a` (direction: 1, variants: multiple)
   - `lamb1a` (direction: -1, variants: multiple)
@@ -80,7 +81,6 @@ End compl   : 0.00
 
 ## To-do
 
-- Use parameters file as default values (not coded into script)
 - BLAST primer check
 - Allow command arguments for primer parameters
 - Allow input for left or right primer
