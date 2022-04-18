@@ -73,6 +73,10 @@ End compl   : 0.00
 ## Notes
 
 - If your target gene has lots of splice varaints (e.g. [DARS2](https://ensembl.org/Homo_sapiens/Gene/Summary?db=core;g=ENSG00000117593;r=1:173824653-173858808)), it is possible that there will not be any overlapping sequences across all varaints. In this case, you should manually select the splice varaints which are most prevalent.
+- The script has been thoroughly tested with these `zebrafish` genes: 
+  - `wnt10a` (direction: 1, variants: multiple)
+  - `lamb1a` (direction: -1, variants: multiple)
+  - `slc7a5` (direction: -1, variants: single)
 
 ## To-do
 
