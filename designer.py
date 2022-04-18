@@ -2,13 +2,14 @@ import ensembl_rest
 import argparse
 import subprocess
 import string
+import re
 from prettytable import PrettyTable
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-s', help='species')
 parser.add_argument('-g', help='gene')
-parser.add_argument('-c', help='config path')
 parser.add_argument('-p', help='parameter file name')
+parser.add_argument('-c', help='thermal path')
 parser.add_argument('-v', help='verbose output', action='store_true')
 args = parser.parse_args()
 
@@ -21,11 +22,6 @@ if args.g is None:
     input_gene = input('\nInput gene name: ')
 else:
     input_gene = args.g
-
-if args.c is None:
-    config_location = '/opt/homebrew/Cellar/primer3/2.4.0/share/primer3/primer3_config/'
-else:
-    config_location = args.c
 
 if args.p is None:
     parameter_file = 'parameters.txt'
@@ -118,22 +114,30 @@ for i, item in enumerate(search_sequence):
     print('\nSequence', i + 1)
     print(item)
 
+with open(parameter_file, 'r') as file:
+    in_file = file.read()
+
+
 primer_params = {
-    'Primer min size': 20,
-    'Primer opt size': 23,
-    'Primer max size': 26,
-    'Primer min Tm': 56,
-    'Primer opt Tm': 60,
-    'Primer max Tm': 64,
-    'Product size range': '300-500',
+    'Primer min size': ['PRIMER_MIN_SIZE='],
+    'Primer opt size': ['PRIMER_OPT_SIZE='],
+    'Primer max size': ['PRIMER_MAX_SIZE='],
+    'Primer min Tm': ['PRIMER_MIN_TM='],
+    'Primer opt Tm': ['PRIMER_OPT_TM='],
+    'Primer max Tm': ['PRIMER_MAX_TM='],
+    'Product size range': ['PRIMER_PRODUCT_SIZE_RANGE='],
 }
+
+for key, value in primer_params.items():
+    original_value = in_file.split(value[0])[1].split('\n')[0]
+    primer_params[key].extend((original_value, original_value))
 
 
 def renderList():
     list = PrettyTable(['Index', 'Parameter', 'Value'])
 
     for index, (key, value) in enumerate(primer_params.items()):
-        list.add_row([index + 1, key, value])
+        list.add_row([index + 1, key, value[1]])
     print('\nPrimer search parameters:')
     print(list)
 
@@ -145,7 +149,7 @@ def selectionMenu():
     else:
         field = list(primer_params)[int(response) - 1]
         value = input(field + ': ')
-        primer_params[field] = value
+        primer_params[field][1] = value
         renderList()
         selectionMenu()
 
@@ -158,9 +162,15 @@ if args.v:
     print('\nSequence sent to primer3:')
     print(joined_sequence)
 
-in_args = list(primer_params.values())
-with open(parameter_file, 'r') as file:
-    in_file = file.read().format(joined_sequence, *in_args, config_location)
+for value in primer_params.values():
+    in_file = in_file.replace(value[0] + value[2], value[0] + value[1])
+
+in_file = in_file.replace('SEQUENCE_TEMPLATE=', 'SEQUENCE_TEMPLATE=' + joined_sequence)
+
+if args.c is not None:
+    config_text = 'PRIMER_THERMODYNAMIC_PARAMETERS_PATH='
+    original_value = in_file.split(config_text)[1].split('\n')[0]
+    in_file = in_file.replace(config_text + original_value, config_text + args.c)
 
 output = subprocess.run(['primer3_core'], stdout=subprocess.PIPE, input=in_file, encoding='ascii')
 output = output.stdout.replace('\n', '=').split('=')
