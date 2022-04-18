@@ -8,7 +8,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-s', help='species')
 parser.add_argument('-g', help='gene')
 parser.add_argument('-c', help='config path')
-parser.add_argument('-v', help='verbose output', action='store_true')  # verbose
+parser.add_argument('-p', help='parameter file name')
+parser.add_argument('-v', help='verbose output', action='store_true')
 args = parser.parse_args()
 
 if args.s is None:
@@ -25,6 +26,11 @@ if args.c is None:
     config_location = '/opt/homebrew/Cellar/primer3/2.4.0/share/primer3/primer3_config/'
 else:
     config_location = args.c
+
+if args.p is None:
+    parameter_file = 'parameters.txt'
+else:
+    parameter_file = args.p
 
 gene = ensembl_rest.symbol_lookup(input_species, input_gene, params={'expand': True})
 
@@ -47,6 +53,8 @@ for sv in range(splice_count):
     summary['location'] = []
     for x in range(exon_count):
         variant = summary['Exon'][x]
+        if args.v:
+            print('Exon', str(x + 1) + ':', variant['start'] - gene['start'], '-', variant['end'] - gene['start'])
         summary['location'].append((variant['start'] - gene['start'], variant['end'] - gene['start']))
 
     exon_variants.append(summary)
@@ -64,35 +72,47 @@ whole_sequence = ensembl_rest.sequence_id(gene['id'])['seq']
 if gene['strand'] == -1:
     whole_sequence = whole_sequence[::-1]
 
-if splice_count > 1:
-    exons = iter(exon_variants)
-    values = exon_values(next(exons))
-    for exon in exons:
-        values.intersection_update(exon_values(exon))
 
-    sorted_values = sorted(list(values))
-    ranges = []
-    for value in sorted_values:
-        if ranges and value == ranges[-1][1] + 1:
-            ranges[-1] = (ranges[-1][0], value)
-        else:
-            ranges.append((value, value))
-else:
-    ranges = exon_variants[0]['location']
+def find_overlaps(variants):
+    if splice_count > 1:
+        exons = iter(variants)
+        values = exon_values(next(exons))
+        for exon in exons:
+            values.intersection_update(exon_values(exon))
 
-search_sequence = []
-for i in range(len(ranges)):
-    start = ranges[i][0]
-    end = ranges[i][1]
-    if gene['strand'] == 1:
-        search_sequence.append(whole_sequence[start:end + 1])
+        sorted_values = sorted(list(values))
+        ranges = []
+        for value in sorted_values:
+            if ranges and value == ranges[-1][1] + 1:
+                ranges[-1] = (ranges[-1][0], value)
+            else:
+                ranges.append((value, value))
     else:
-        search_sequence.append(whole_sequence[start:end + 1][::-1])
-        if splice_count > 1:
-            search_sequence.reverse()
+        ranges = variants[0]['location']
 
-if splice_count > 1:
-    print('\nFound', len(search_sequence), 'overlapping sequences to search')
+    search_sequence = []
+    for i in range(len(ranges)):
+        start = ranges[i][0]
+        end = ranges[i][1]
+        if gene['strand'] == 1:
+            search_sequence.append(whole_sequence[start:end + 1])
+        else:
+            search_sequence.append(whole_sequence[start:end + 1][::-1])
+            if splice_count > 1:
+                search_sequence.reverse()
+
+    if splice_count > 1:
+        if len(search_sequence) > 0:
+            print('\nFound', len(search_sequence), 'overlapping sequences')
+        else:
+            print('\nError: found 0 overlapping sequences')
+            indices = [int(i) - 1 for i in input('Manually select splice variants to find overlaps for (e.g. 1,5,12): ').replace(' ', '').split(',')]
+            selected_elements = [exon_variants[index] for index in indices]
+            search_sequence = find_overlaps(selected_elements)
+    return search_sequence
+
+
+search_sequence = find_overlaps(exon_variants)
 
 for i, item in enumerate(search_sequence):
     print('\nSequence', i + 1)
@@ -132,10 +152,15 @@ def selectionMenu():
 
 renderList()
 selectionMenu()
-in_args = list(primer_params.values())
 
-with open('parameters.txt', 'r') as file:
-    in_file = file.read().format(''.join(search_sequence), *in_args, config_location)
+joined_sequence = ''.join(search_sequence)
+if args.v:
+    print('\nSequence sent to primer3:')
+    print(joined_sequence)
+
+in_args = list(primer_params.values())
+with open(parameter_file, 'r') as file:
+    in_file = file.read().format(joined_sequence, *in_args, config_location)
 
 output = subprocess.run(['primer3_core'], stdout=subprocess.PIPE, input=in_file, encoding='ascii')
 output = output.stdout.replace('\n', '=').split('=')
@@ -179,7 +204,7 @@ for index in reversed(range(len(pairs))):
     print('Product size:', pairs[index]['product_size'])
     print('Any compl   :', pairs[index]['compl_any'])
     print('End compl   :', pairs[index]['compl_end'])
-    list = PrettyTable(['Direction', 'Length', 'Tm', 'GC%', 'Self-binding', 'Hairpin', 'End Stability', 'Sequence'])
+    list = PrettyTable(['Primer', 'Length', 'Tm', 'GC%', 'Self-binding', 'Hairpin', 'End Stability', 'Sequence'])
     for i, side in enumerate(['Left', 'Right']):
         dict = pairs[index][i]
         list.add_row([side, dict['length'], dict['tm'], dict['gc_percent'], dict['self_binding_any'], dict['any_hairpin'], dict['end_stability'], dict['sequence']])
