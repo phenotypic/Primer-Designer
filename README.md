@@ -31,8 +31,9 @@ Here are some flags you can add:
 | --- | --- |
 | `-s <species>` | Species: Define a species (script will prompt you otherwise) |
 | `-g <gene>` | Gene: Define a target gene (script will prompt you otherwise) |
-| `-c <method>` | Interface: Set a thermodynamic parameters path (script will use default otherwise) |
-| `-v` | Verbose: Activate verbose logging |
+| `-p <file>` | Parameters: Define parameter file (script defaults to `parameters.txt`) |
+| `-t <directory>` | Thermals: Set a custom thermodynamic configuration path (script will use default otherwise) |
+| `-v` | Verbose: Activate verbose output |
 
 After running the script and selecting a target species and gene, the overlapping regions of any splice variants will be found.
 
