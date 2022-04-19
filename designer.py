@@ -201,7 +201,7 @@ for i in range(pair_count):
         primers[index]['gc_percent'] = result_parser(side, i, '_GC_PERCENT')
     pairs.append(primers)
 
-for index in reversed(range(len(pairs))):
+for index in reversed(range(pair_count)):
     print('\n\nPrimer pair', index + 1)
     print('---------------------')
     print('Gene name:', gene['display_name'])
