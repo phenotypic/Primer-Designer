@@ -86,4 +86,4 @@ End compl   : 0.00
 - Allow command arguments for primer parameters
 - Allow input for left or right primer
 - Save info and sequence files locally for offline checks
-- Ensure primers are not found overlapping two exons (exlusively search pairs of primers)
+- Ensure individual primers are not found overlapping two exons (exlusively search pairs of primers)
