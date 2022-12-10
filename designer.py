@@ -31,9 +31,9 @@ gene = ensembl_rest.symbol_lookup(input_species, input_gene, params={'expand': T
 
 splice_count = len(gene['Transcript'])
 
-print('Species:', gene['species'])
+print('\nSpecies:', gene['species'])
 print('Genome:', gene['assembly_name'])
-print('\nGene name:', gene['display_name'])
+print('Gene name:', gene['display_name'])
 print('Description:', gene['description'])
 print('Gene ID:', gene['id'])
 print('Strand direction:', gene['strand'])
