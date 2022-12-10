@@ -13,12 +13,12 @@ parser.add_argument('-v', help='verbose output', action='store_true')
 args = parser.parse_args()
 
 if args.s is None:
-    input_species = input('\nInput species name: ')
+    input_species = input('\nInput species name (e.g. zebrafish): ')
 else:
     input_species = args.s
 
 if args.g is None:
-    input_gene = input('\nInput gene name: ')
+    input_gene = input('\nInput gene name (e.g. wnt10a): ')
 else:
     input_gene = args.g
 
@@ -31,11 +31,11 @@ gene = ensembl_rest.symbol_lookup(input_species, input_gene, params={'expand': T
 
 splice_count = len(gene['Transcript'])
 
-print('\nGene name:', gene['display_name'])
 print('Species:', gene['species'])
-print('Gene ID:', gene['id'])
-print('Description:', gene['description'])
 print('Genome:', gene['assembly_name'])
+print('\nGene name:', gene['display_name'])
+print('Description:', gene['description'])
+print('Gene ID:', gene['id'])
 print('Strand direction:', gene['strand'])
 print('Splice varaints:', splice_count)
 
@@ -110,7 +110,7 @@ def find_overlaps(variants):
 search_sequence = find_overlaps(exon_variants)
 
 for i, item in enumerate(search_sequence):
-    print('\nSequence', i + 1)
+    print('\nExon', i + 1)
     print(item)
 
 with open(parameter_file, 'r') as file:
@@ -140,7 +140,7 @@ def selectionMenu():
     print('\nPrimer search parameters:')
     print(list)
 
-    response = input('\nEnter index of parameter to edit or press return: ').lower()
+    response = input('\nEnter index to edit parameter (or press return): ').lower()
     if response in string.ascii_lowercase:
         return
     else:
