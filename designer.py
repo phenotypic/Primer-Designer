@@ -133,12 +133,12 @@ for key, value in primer_params.items():
 
 
 def selectionMenu():
-    list = PrettyTable(['Index', 'Parameter', 'Value'])
+    parameterList = PrettyTable(['Index', 'Parameter', 'Value'])
 
     for index, (key, value) in enumerate(primer_params.items()):
-        list.add_row([index + 1, key, value[1]])
+        parameterList.add_row([index + 1, key, value[1]])
     print('\nPrimer search parameters:')
-    print(list)
+    print(parameterList)
 
     response = input('\nEnter index to edit parameter (or press return): ').lower()
     if response in string.ascii_lowercase:
@@ -209,8 +209,8 @@ for index in reversed(range(pair_count)):
     print('Product size:', pairs[index]['product_size'])
     print('Any compl   :', pairs[index]['compl_any'])
     print('End compl   :', pairs[index]['compl_end'])
-    list = PrettyTable(['Primer', 'Length', 'Tm', 'GC%', 'Self-binding', 'Hairpin', 'End Stability', 'Sequence'])
+    primerList = PrettyTable(['Primer', 'Length', 'Tm', 'GC%', 'Self-binding', 'Hairpin', 'End Stability', 'Sequence'])
     for i, side in enumerate(['Left', 'Right']):
         dict = pairs[index][i]
-        list.add_row([side, dict['length'], dict['tm'], dict['gc_percent'], dict['self_binding_any'], dict['any_hairpin'], dict['end_stability'], dict['sequence']])
-    print(list)
+        primerList.add_row([side, dict['length'], dict['tm'], dict['gc_percent'], dict['self_binding_any'], dict['any_hairpin'], dict['end_stability'], dict['sequence']])
+    print(primerList)
