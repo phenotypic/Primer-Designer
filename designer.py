@@ -114,7 +114,7 @@ for i, item in enumerate(search_sequence):
     print(item)
 
 with open(parameter_file, 'r') as file:
-    in_file = file.read()
+    in_file = file.read().rstrip()
 
 
 primer_params = {
