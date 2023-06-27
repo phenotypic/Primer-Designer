@@ -14,13 +14,22 @@ You must have `python3` installed. You will need to install any other outstandin
 
 ## Usage
 
-Download with:
+Clone the repository:
 ```
 git clone https://github.com/phenotypic/Primer-Designer.git
+```
+
+Change to the project directory:
+```
+cd Primer-Designer
+```
+
+Install dependencies:
+```
 pip3 install -r requirements.txt
 ```
 
-Run from the same directory with:
+Run the script:
 ```
 python3 designer.py
 ```
